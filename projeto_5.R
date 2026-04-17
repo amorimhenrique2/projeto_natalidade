@@ -42,6 +42,9 @@ dados_sinasc_2$SEXO[dados_sinasc_2$SEXO == 0] <- NA
 dados_sinasc_2$APGAR5[dados_sinasc_2$APGAR5 == 99] <- NA
 dados_sinasc_2$RACACOR[dados_sinasc_2$RACACOR == 9] <- NA
 
+dados_sinasc_2[dados_sinasc_2 == "Ignorado"] <- NA
+dados_sinasc_2[dados_sinasc_2 == "Nao informado"] <- NA
+
 #tarefa 6 
 # SEXO
 dados_sinasc_2$SEXO <- factor(
