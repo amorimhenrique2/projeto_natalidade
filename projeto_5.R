@@ -36,9 +36,13 @@ table(dados_sinasc_2$PARIDADE)
 table(dados_sinasc_2$KOTELCHUCK)
 
 #TAREFA 5
+dados_sinasc_2[dados_sinasc_2 == "Ignorado"] <- NA
+dados_sinasc_2[dados_sinasc_2 == "Nao informado"] <- NA
 
 
+#TAREFA 6
 
 
+#TAREFA 7
 
 
