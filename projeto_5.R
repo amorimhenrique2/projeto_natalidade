@@ -1,0 +1,1 @@
+#abrindo o arquivo
