@@ -158,3 +158,114 @@ dados_sinasc_2$ESTCIV = ifelse(dados_sinasc_2$ESTCIVMAE %in% c("Solteira", "Viú
                                ifelse(dados_sinasc_2$ESTCIVMAE %in% c("Casada", "União estável"), "Com companheiro", NA))
 dados_sinasc_2$ESTCIV = factor(dados_sinasc_2$ESTCIV, levels = c("Sem companheiro","Com companheiro"))
 
+
+#tarefa 8
+
+tabela_pig = read.csv( "Tabela_PIG_Brasil.csv", header = TRUE, sep=";")
+
+
+
+tabela_pig$SEXO = factor(tabela_pig$SEXO, levels = c("Masculino", "Feminino"))
+
+
+
+dados_sinasc_2$SEMAGESTAC <- as.numeric(dados_sinasc_2$SEMAGESTAC)
+tabela_pig$SEMAGESTAC <- as.numeric(tabela_pig$SEMAGESTAC)
+
+
+
+names(tabela_pig)[names(tabela_pig) == "SEXO"] <- "SEXO_PIG"
+
+ 
+dados_sinasc_2 <- merge(
+  dados_sinasc_2,
+  tabela_pig,
+  by = "SEMAGESTAC",
+  all.x = TRUE
+)
+
+# Criar F_PIG
+dados_sinasc_2$F_PIG <- ifelse(
+  dados_sinasc_2$GRAVIDEZ != 1,
+  NA,
+  ifelse(
+    is.na(dados_sinasc_2$PESO) |
+      is.na(dados_sinasc_2$PESO_P10) |
+      is.na(dados_sinasc_2$PESO_P90),
+    NA,
+    ifelse(
+      dados_sinasc_2$PESO < dados_sinasc_2$PESO_P10, "PIG",
+      ifelse(
+        dados_sinasc_2$PESO <= dados_sinasc_2$PESO_P90, "AIG",
+        "GIG"
+      )
+    )
+  )
+)
+
+
+dados_sinasc_2$F_PIG <- factor(
+  dados_sinasc_2$F_PIG,
+  levels = c("PIG","AIG","GIG")
+)
+
+#TAREFA 9
+
+
+# Frequências principais
+freq_LOCNASC <- table(dados_sinasc_2$LOCNASC)
+freq_ESTCIVMAE <- table(dados_sinasc_2$ESTCIVMAE)
+freq_GESTACAO <- table(dados_sinasc_2$GESTACAO)
+freq_GRAVIDEZ <- table(dados_sinasc_2$GRAVIDEZ)
+freq_PARTO <- table(dados_sinasc_2$PARTO)
+freq_SEXO <- table(dados_sinasc_2$SEXO)
+freq_APGAR5 <- table(dados_sinasc_2$F_APGAR5)
+freq_RACACOR <- table(dados_sinasc_2$RACACOR)
+freq_ESCMAE2010 <- table(dados_sinasc_2$ESCMAE2010)
+freq_RACACORMAE <- table(dados_sinasc_2$RACACORMAE)
+freq_TPAPRESENT <- table(dados_sinasc_2$TPAPRESENT)
+freq_TPROBSON <- table(dados_sinasc_2$TPROBSON)
+freq_PARIDADE <- table(dados_sinasc_2$PARIDADE)
+freq_KOTELCHUCK <- table(dados_sinasc_2$KOTELCHUCK)
+
+# Variáveis criadas
+freq_F_PESO <- table(dados_sinasc_2$F_PESO)
+freq_F_IDADE <- table(dados_sinasc_2$F_IDADE)
+freq_PERIG <- table(dados_sinasc_2$PERIG)
+freq_ESTCIV <- table(dados_sinasc_2$ESTCIV)
+freq_F_PIG <- table(dados_sinasc_2$F_PIG)
+
+
+#. MEDIDAS — IDADE DA MÃE
+IM_P25 <- quantile(dados_sinasc_2$IDADEMAE, 0.25, na.rm = TRUE)
+IM_P50 <- quantile(dados_sinasc_2$IDADEMAE, 0.50, na.rm = TRUE)
+IM_P75 <- quantile(dados_sinasc_2$IDADEMAE, 0.75, na.rm = TRUE)
+IM_MD  <- mean(dados_sinasc_2$IDADEMAE, na.rm = TRUE)
+IM_DP  <- sd(dados_sinasc_2$IDADEMAE, na.rm = TRUE)
+
+
+
+#. MEDIDAS — PESO
+
+PESO_P25 <- quantile(dados_sinasc_2$PESO, 0.25, na.rm = TRUE)
+PESO_P50 <- quantile(dados_sinasc_2$PESO, 0.50, na.rm = TRUE)
+PESO_P75 <- quantile(dados_sinasc_2$PESO, 0.75, na.rm = TRUE)
+PESO_MD  <- mean(dados_sinasc_2$PESO, na.rm = TRUE)
+PESO_DP  <- sd(dados_sinasc_2$PESO, na.rm = TRUE)
+
+
+#. MEDIDAS — DURAÇÃO DA GESTAÇÃO
+DG_P25 <- quantile(dados_sinasc_2$SEMAGESTAC, 0.25, na.rm = TRUE)
+DG_P50 <- quantile(dados_sinasc_2$SEMAGESTAC, 0.50, na.rm = TRUE)
+DG_P75 <- quantile(dados_sinasc_2$SEMAGESTAC, 0.75, na.rm = TRUE)
+DG_MD  <- mean(dados_sinasc_2$SEMAGESTAC, na.rm = TRUE)
+DG_DP  <- sd(dados_sinasc_2$SEMAGESTAC, na.rm = TRUE)
+
+
+
+#. MEDIDAS — APGAR
+APG5_MD <- mean(dados_sinasc_2$APGAR5, na.rm = TRUE)
+APG5_DP <- sd(dados_sinasc_2$APGAR5, na.rm = TRUE)
+
+
+
