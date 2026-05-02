@@ -268,4 +268,5 @@ APG5_MD <- mean(dados_sinasc_2$APGAR5, na.rm = TRUE)
 APG5_DP <- sd(dados_sinasc_2$APGAR5, na.rm = TRUE)
 
 
+#medidas descritivas e qualitativas
 
