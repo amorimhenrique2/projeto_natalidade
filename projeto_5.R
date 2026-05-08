@@ -419,3 +419,44 @@ SINASC_CE <- rbind(linha_total, linhas_municipios)
 
 #tarefa 11
 write.csv(SINASC_CE, "SINASC_CE.csv", row.names = FALSE)
+
+
+
+
+
+
+#ETAPA 2
+
+#TAREFA 1
+
+dados_sim = read.csv("Mortalidade_Geral_2015.csv", sep=";", header=TRUE)
+head(dados_sinasc)
+str(dados_sinasc)
+
+#TAREFA 2
+dados_sim_1 = dados_sim[, c(1,3,4,8,9,10,11,14,17,35,36,37,47,77,84)]
+
+colnames(dados_sim_1) = c(
+  "CONTADOR",
+  "TIPOBITO",
+  "DTOBITO",
+  "DTNASC",
+  "IDADE",
+  "SEXO",
+  "RACACOR",
+  "ESC2010",
+  "CODMUNRES",
+  "TPMORTEOCO",
+  "OBITOGRAV",
+  "OBITOPUERP",
+  "CAUSABAS",
+  "TPOBITOCOR",
+  "MORTEPARTO"
+)
+
+#TAREFA 3
+dados_sim_2 = subset(dados_sim_1, substr(CODMUNRES,1,2) == "23")
+
+table(substr(dados_sim_2$CODMUNRES,1,2))
+
+write.csv(dados_sim_2, "dados_sim_2.csv", row.names = FALSE)
