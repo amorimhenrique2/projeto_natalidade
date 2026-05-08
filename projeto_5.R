@@ -460,3 +460,167 @@ dados_sim_2 = subset(dados_sim_1, substr(CODMUNRES,1,2) == "23")
 table(substr(dados_sim_2$CODMUNRES,1,2))
 
 write.csv(dados_sim_2, "dados_sim_2.csv", row.names = FALSE)
+
+
+#TAREFA 4
+table(dados_sim_2$TIPOBITO)
+
+table(dados_sim_2$SEXO)
+
+table(dados_sim_2$RACACOR)
+
+table(dados_sim_2$TPMORTEOCO)
+
+table(dados_sim_2$OBITOGRAV)
+
+table(dados_sim_2$OBITOPUERP)
+
+table(dados_sim_2$CAUSABAS)
+
+table(dados_sim_2$TPOBITOCOR)
+
+table(dados_sim_2$MORTEPARTO)
+
+#valores das variáveis quantitativas
+
+unique(dados_sim_2$IDADE)
+
+summary(dados_sim_2$IDADE)
+
+
+#TAREFA 5
+dados_sim_2$TIPOBITO[dados_sim_2$TIPOBITO == 9] <- NA
+
+dados_sim_2$SEXO[dados_sim_2$SEXO == 9] <- NA
+
+dados_sim_2$RACACOR[dados_sim_2$RACACOR == 9] <- NA
+
+dados_sim_2$TPMORTEOCO[dados_sim_2$TPMORTEOCO == 9] <- NA
+
+dados_sim_2$OBITOGRAV[dados_sim_2$OBITOGRAV == 9] <- NA
+
+dados_sim_2$OBITOPUERP[dados_sim_2$OBITOPUERP == 9] <- NA
+
+dados_sim_2$TPOBITOCOR[dados_sim_2$TPOBITOCOR == 9] <- NA
+
+dados_sim_2$MORTEPARTO[dados_sim_2$MORTEPARTO == 9] <- NA
+
+dados_sim_2$IDADE[dados_sim_2$IDADE == 999] <- NA
+
+
+#tAREFA 6
+dados_sim_2$TIPOBITO <- factor(
+  dados_sim_2$TIPOBITO,
+  levels = c(1,2),
+  labels = c("Fetal","Nao fetal")
+)
+
+dados_sim_2$SEXO <- factor(
+  dados_sim_2$SEXO,
+  levels = c("M","F","I","0","9"),
+  labels = c("Masculino","Feminino","Ignorado","Ignorado","Ignorado")
+)
+
+dados_sim_2$RACACOR <- factor(
+  dados_sim_2$RACACOR,
+  levels = c(1,2,3,4,5),
+  labels = c("Branca","Preta","Amarela","Parda","Indigena")
+)
+
+dados_sim_2$ESC2010 <- factor(
+  dados_sim_2$ESC2010,
+  levels = c(0,1,2,3,4,5,9),
+  labels = c(
+    "Sem escolaridade",
+    "Fundamental I",
+    "Fundamental II",
+    "Medio",
+    "Superior incompleto",
+    "Superior completo",
+    "Ignorado"
+  )
+)
+
+dados_sim_2$TPMORTEOCO <- factor(
+  dados_sim_2$TPMORTEOCO,
+  levels = c(1,2,3,4,5,8,9),
+  labels = c(
+    "Na gravidez",
+    "No parto",
+    "No abortamento",
+    "Ate 42 dias apos o parto",
+    "De 43 dias a 1 ano apos a gestacao",
+    "Nao ocorreu nestes periodos",
+    "Ignorado"
+  )
+)
+
+dados_sim_2$OBITOGRAV <- factor(
+  dados_sim_2$OBITOGRAV,
+  levels = c(1,2,9),
+  labels = c(
+    "Sim",
+    "Nao",
+    "Ignorado"
+  )
+)
+
+dados_sim_2$OBITOPUERP <- factor(
+  dados_sim_2$OBITOPUERP,
+  levels = c(1,2,3,9),
+  labels = c(
+    "Sim ate 42 dias",
+    "Sim de 43 dias a 1 ano",
+    "Nao",
+    "Ignorado"
+  )
+)
+
+
+dados_sim_2$TPOBITOCOR <- factor(
+  dados_sim_2$TPOBITOCOR,
+  levels = c(1,2,3,4,5,9),
+  labels = c(
+    "Via publica",
+    "Endereco residencia",
+    "Outro domicilio",
+    "Estabelecimento comercial",
+    "Outros",
+    "Ignorado"
+  )
+)
+
+dados_sim_2$MORTEPARTO <- factor(
+  dados_sim_2$MORTEPARTO,
+  levels = c(1,2,3,9),
+  labels = c(
+    "Antes",
+    "Durante",
+    "Apos",
+    "Ignorado"
+  )
+)
+
+
+dados_sim_2$CAUSABAS <- factor(
+  dados_sim_2$CAUSABAS,
+  levels = c(
+    "A00","B20","C50","E10","I10","I21","J18","K70","N18","O15","P07","Q24","R99","V89"
+  ),
+  labels = c(
+    "Colera",
+    "Doenca pelo HIV",
+    "Neoplasia maligna da mama",
+    "Diabetes mellitus",
+    "Hipertensao arterial",
+    "Infarto agudo do miocardio",
+    "Pneumonia",
+    "Doenca alcoolica do figado",
+    "Insuficiencia renal cronica",
+    "Eclampsia",
+    "Baixo peso ao nascer",
+    "Malformacao cardiaca congenita",
+    "Causa mal definida",
+    "Acidente de transporte"
+  )
+)
