@@ -481,6 +481,25 @@ table(dados_sim_2$TPOBITOCOR)
 
 table(dados_sim_2$MORTEPARTO)
 
+freq_TIPOBITO <- table(dados_sim_2$TIPOBITO)
+
+freq_SEXO <- table(dados_sim_2$SEXO)
+
+freq_RACACOR <- table(dados_sim_2$RACACOR)
+
+freq_TPMORTEOCO <- table(dados_sim_2$TPMORTEOCO)
+
+freq_OBITOGRAV <- table(dados_sim_2$OBITOGRAV)
+
+freq_OBITOPUERP <- table(dados_sim_2$OBITOPUERP)
+
+freq_CAUSABAS <- table(dados_sim_2$CAUSABAS)
+
+freq_TPOBITOCOR <- table(dados_sim_2$TPOBITOCOR)
+
+freq_MORTEPARTO <- table(dados_sim_2$MORTEPARTO)
+
+
 #valores das variáveis quantitativas
 
 unique(dados_sim_2$IDADE)
@@ -517,14 +536,21 @@ dados_sim_2$TIPOBITO <- factor(
 
 dados_sim_2$SEXO <- factor(
   dados_sim_2$SEXO,
-  levels = c("M","F","I","0","9"),
-  labels = c("Masculino","Feminino","Ignorado","Ignorado","Ignorado")
+  levels = c("M","F","I"),
+  labels = c("Masculino","Feminino","Ignorado")
 )
 
 dados_sim_2$RACACOR <- factor(
   dados_sim_2$RACACOR,
-  levels = c(1,2,3,4,5),
-  labels = c("Branca","Preta","Amarela","Parda","Indigena")
+  levels = c(1,2,3,4,5,9),
+  labels = c(
+    "Branca",
+    "Preta",
+    "Amarela",
+    "Parda",
+    "Indigena",
+    "Ignorado"
+  )
 )
 
 dados_sim_2$ESC2010 <- factor(
@@ -549,7 +575,7 @@ dados_sim_2$TPMORTEOCO <- factor(
     "No parto",
     "No abortamento",
     "Ate 42 dias apos o parto",
-    "De 43 dias a 1 ano apos a gestacao",
+    "De 43 dias a 1 ano apos o parto",
     "Nao ocorreu nestes periodos",
     "Ignorado"
   )
@@ -576,6 +602,9 @@ dados_sim_2$OBITOPUERP <- factor(
   )
 )
 
+dados_sim_2$CAUSABAS <- factor(
+  dados_sim_2$CAUSABAS
+)
 
 dados_sim_2$TPOBITOCOR <- factor(
   dados_sim_2$TPOBITOCOR,
@@ -584,7 +613,7 @@ dados_sim_2$TPOBITOCOR <- factor(
     "Via publica",
     "Endereco residencia",
     "Outro domicilio",
-    "Estabelecimento comercial",
+    "Estabelecimento de saude",
     "Outros",
     "Ignorado"
   )
@@ -600,27 +629,226 @@ dados_sim_2$MORTEPARTO <- factor(
     "Ignorado"
   )
 )
+dados_sim_2$CAUSABAS <- as.character(dados_sim_2$CAUSABAS)
+
+dados_sim_2$CAUSABAS[grep("^C61", dados_sim_2$CAUSABAS)] <- "Neoplasia maligna da prostata"
+
+dados_sim_2$CAUSABAS[grep("^C67", dados_sim_2$CAUSABAS)] <- "Neoplasia maligna da bexiga"
+
+dados_sim_2$CAUSABAS[grep("^C83", dados_sim_2$CAUSABAS)] <- "Linfoma nao Hodgkin"
+
+dados_sim_2$CAUSABAS[grep("^C71", dados_sim_2$CAUSABAS)] <- "Neoplasia maligna do encefalo"
+
+dados_sim_2$CAUSABAS[grep("^C24", dados_sim_2$CAUSABAS)] <- "Neoplasia das vias biliares"
+
+dados_sim_2$CAUSABAS[grep("^C34", dados_sim_2$CAUSABAS)] <- "Neoplasia maligna dos bronquios e pulmao"
+
+dados_sim_2$CAUSABAS[grep("^C22", dados_sim_2$CAUSABAS)] <- "Neoplasia maligna do figado"
+
+dados_sim_2$CAUSABAS[grep("^D38", dados_sim_2$CAUSABAS)] <- "Neoplasia de comportamento incerto"
+
+dados_sim_2$CAUSABAS[grep("^E88", dados_sim_2$CAUSABAS)] <- "Outros disturbios metabolicos"
+
+dados_sim_2$CAUSABAS[grep("^E87", dados_sim_2$CAUSABAS)] <- "Outros transtornos hidroeletroliticos"
+
+dados_sim_2$CAUSABAS[grep("^E10", dados_sim_2$CAUSABAS)] <- "Diabetes mellitus"
+
+dados_sim_2$CAUSABAS[grep("^G30", dados_sim_2$CAUSABAS)] <- "Doenca de Alzheimer"
+
+dados_sim_2$CAUSABAS[grep("^I21", dados_sim_2$CAUSABAS)] <- "Infarto agudo do miocardio"
+
+dados_sim_2$CAUSABAS[grep("^I50", dados_sim_2$CAUSABAS)] <- "Insuficiencia cardiaca"
+
+dados_sim_2$CAUSABAS[grep("^I64", dados_sim_2$CAUSABAS)] <- "Acidente vascular cerebral"
+
+dados_sim_2$CAUSABAS[grep("^J12", dados_sim_2$CAUSABAS)] <- "Pneumonia viral"
+
+dados_sim_2$CAUSABAS[grep("^J18", dados_sim_2$CAUSABAS)] <- "Pneumonia"
+
+dados_sim_2$CAUSABAS[grep("^J44", dados_sim_2$CAUSABAS)] <- "Doenca pulmonar obstrutiva cronica"
+
+dados_sim_2$CAUSABAS[grep("^J43", dados_sim_2$CAUSABAS)] <- "Enfisema"
+
+dados_sim_2$CAUSABAS[grep("^Q07", dados_sim_2$CAUSABAS)] <- "Malformacoes congenitas do sistema nervoso"
+
+dados_sim_2$CAUSABAS[grep("^R54", dados_sim_2$CAUSABAS)] <- "Senilidade"
+
+dados_sim_2$CAUSABAS <- factor(dados_sim_2$CAUSABAS)
 
 
-dados_sim_2$CAUSABAS <- factor(
-  dados_sim_2$CAUSABAS,
-  levels = c(
-    "A00","B20","C50","E10","I10","I21","J18","K70","N18","O15","P07","Q24","R99","V89"
-  ),
-  labels = c(
-    "Colera",
-    "Doenca pelo HIV",
-    "Neoplasia maligna da mama",
-    "Diabetes mellitus",
-    "Hipertensao arterial",
-    "Infarto agudo do miocardio",
-    "Pneumonia",
-    "Doenca alcoolica do figado",
-    "Insuficiencia renal cronica",
-    "Eclampsia",
-    "Baixo peso ao nascer",
-    "Malformacao cardiaca congenita",
-    "Causa mal definida",
-    "Acidente de transporte"
+#TAREFA 7
+criar_linha_sim <- function(df, municipio){
+  
+  data.frame(
+    
+    ANO = 2015,
+    UFR = "CE",
+    CODMUNRES = municipio,
+    
+    TO = nrow(df),
+    
+    TO_M = sum(df$SEXO == "Masculino", na.rm = TRUE),
+    TO_FEM = sum(df$SEXO == "Feminino", na.rm = TRUE),
+    TO_IGN = sum(is.na(df$SEXO), na.rm = TRUE),
+    
+    TO_F = sum(df$TIPOBITO == "Fetal", na.rm = TRUE),
+    TO_NF = sum(df$TIPOBITO == "Nao fetal", na.rm = TRUE),
+    
+    TO_NEO = sum(
+      df$TIPOBITO == "Nao fetal" &
+        df$IDADE >= 0 &
+        df$IDADE <= 27,
+      na.rm = TRUE
+    ),
+    
+    TO_NEO_B = sum(
+      df$TIPOBITO == "Nao fetal" &
+        df$IDADE >= 0 &
+        df$IDADE <= 27 &
+        df$RACACOR == "Branca",
+      na.rm = TRUE
+    ),
+    
+    TO_NEO_P = sum(
+      df$TIPOBITO == "Nao fetal" &
+        df$IDADE >= 0 &
+        df$IDADE <= 27 &
+        df$RACACOR == "Preta",
+      na.rm = TRUE
+    ),
+    
+    TO_NEO_A = sum(
+      df$TIPOBITO == "Nao fetal" &
+        df$IDADE >= 0 &
+        df$IDADE <= 27 &
+        df$RACACOR == "Amarela",
+      na.rm = TRUE
+    ),
+    
+    TO_NEO_PD = sum(
+      df$TIPOBITO == "Nao fetal" &
+        df$IDADE >= 0 &
+        df$IDADE <= 27 &
+        df$RACACOR == "Parda",
+      na.rm = TRUE
+    ),
+    
+    TO_NEO_I = sum(
+      df$TIPOBITO == "Nao fetal" &
+        df$IDADE >= 0 &
+        df$IDADE <= 27 &
+        df$RACACOR == "Indigena",
+      na.rm = TRUE
+    ),
+    
+    TO_MAT = sum(!is.na(df$TPMORTEOCO), na.rm = TRUE),
+    
+    TO_MAT_G = sum(df$TPMORTEOCO == "Na gravidez", na.rm = TRUE),
+    
+    TO_MAT_P = sum(df$TPMORTEOCO == "No parto", na.rm = TRUE),
+    
+    TO_MAT_A = sum(df$TPMORTEOCO == "No abortamento", na.rm = TRUE),
+    
+    TO_MAT_42 = sum(
+      df$TPMORTEOCO == "Ate 42 dias apos o parto",
+      na.rm = TRUE
+    ),
+    
+    TO_MAT_43 = sum(
+      df$TPMORTEOCO == "De 43 dias a 1 ano apos o parto",
+      na.rm = TRUE
+    ),
+    
+    ESC0 = sum(df$ESC2010 == "Sem escolaridade", na.rm = TRUE),
+    
+    ESC1 = sum(df$ESC2010 == "Fundamental I", na.rm = TRUE),
+    
+    ESC2 = sum(df$ESC2010 == "Fundamental II", na.rm = TRUE),
+    
+    ESC3 = sum(df$ESC2010 == "Medio", na.rm = TRUE),
+    
+    ESC4 = sum(df$ESC2010 == "Superior incompleto", na.rm = TRUE),
+    
+    ESC5 = sum(df$ESC2010 == "Superior completo", na.rm = TRUE),
+    
+    IDADE_P25 = as.numeric(
+      quantile(df$IDADE, 0.25, na.rm = TRUE)
+    ),
+    
+    IDADE_P50 = as.numeric(
+      quantile(df$IDADE, 0.50, na.rm = TRUE)
+    ),
+    
+    IDADE_P75 = as.numeric(
+      quantile(df$IDADE, 0.75, na.rm = TRUE)
+    ),
+    
+    IDADE_MD = mean(df$IDADE, na.rm = TRUE),
+    
+    IDADE_DP = sd(df$IDADE, na.rm = TRUE),
+    
+    CID_I = sum(grepl("^I", df$CAUSABAS), na.rm = TRUE),
+    
+    CID_C = sum(grepl("^C", df$CAUSABAS), na.rm = TRUE),
+    
+    CID_J = sum(grepl("^J", df$CAUSABAS), na.rm = TRUE),
+    
+    CID_A = sum(grepl("^A", df$CAUSABAS), na.rm = TRUE),
+    
+    CID_E = sum(grepl("^E", df$CAUSABAS), na.rm = TRUE),
+    
+    IDADE_0_27 = sum(
+      df$IDADE >= 0 & df$IDADE <= 27,
+      na.rm = TRUE
+    ),
+    
+    IDADE_28_364 = sum(
+      df$IDADE >= 28 & df$IDADE <= 364,
+      na.rm = TRUE
+    ),
+    
+    IDADE_1_4 = sum(
+      df$IDADE >= 365 & df$IDADE <= 1825,
+      na.rm = TRUE
+    ),
+    
+    IDADE_5_19 = sum(
+      df$IDADE > 1825 & df$IDADE <= 6935,
+      na.rm = TRUE
+    )
+    
+  )
+  
+}
+
+linha_total <- criar_linha_sim(dados_sim_2, "CE")
+
+lista_municipios <- split(
+  dados_sim_2,
+  dados_sim_2$CODMUNRES
+)
+
+linhas_municipios <- do.call(
+  rbind,
+  lapply(
+    names(lista_municipios),
+    function(mun){
+      
+      criar_linha_sim(
+        lista_municipios[[mun]],
+        mun
+      )
+      
+    }
   )
 )
+
+SIM_CE <- rbind(
+  linha_total,
+  linhas_municipios
+)
+
+
+
+#TAREFA 8
+write.csv(SIM_CE, "SIM_CE.csv", row.names = FALSE)
