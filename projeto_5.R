@@ -677,31 +677,85 @@ dados_sim_2$CAUSABAS <- factor(dados_sim_2$CAUSABAS)
 
 
 #TAREFA 7
-criar_linha_sim <- function(df, municipio){
+criar_linha_sim <- function(df, nivel, codigo){
   
   data.frame(
     
     ANO = 2015,
-    UFR = "CE",
-    CODMUNRES = municipio,
+    
+    NIVEL = nivel,
+    
+    CODMUNRES = codigo,
     
     TO = nrow(df),
     
+    TORC = sum(complete.cases(dados_sim), na.rm = TRUE),
+    
+    TORCR = sum(complete.cases(df), na.rm = TRUE),
+    
+    TO_NN = sum(grepl("^[VWXY]", df$CAUSABAS), na.rm = TRUE),
+    
+    TO_N = sum(!grepl("^[VWXY]", df$CAUSABAS), na.rm = TRUE),
+    
+    TO_CB_I = sum(grepl("^[AB]", df$CAUSABAS), na.rm = TRUE),
+    
+    TO_CB_N = sum(grepl("^[CD]", df$CAUSABAS), na.rm = TRUE),
+    
+    TO_CB_C = sum(grepl("^I", df$CAUSABAS), na.rm = TRUE),
+    
+    TO_CB_R = sum(grepl("^J", df$CAUSABAS), na.rm = TRUE),
+    
+    TO_CB_O = sum(
+      !grepl("^[ABCDIJVWXY]", df$CAUSABAS),
+      na.rm = TRUE
+    ),
+    
     TO_M = sum(df$SEXO == "Masculino", na.rm = TRUE),
-    TO_FEM = sum(df$SEXO == "Feminino", na.rm = TRUE),
-    TO_IGN = sum(is.na(df$SEXO), na.rm = TRUE),
     
-    TO_F = sum(df$TIPOBITO == "Fetal", na.rm = TRUE),
-    TO_NF = sum(df$TIPOBITO == "Nao fetal", na.rm = TRUE),
+    TO_F = sum(df$SEXO == "Feminino", na.rm = TRUE),
     
-    TO_NEO = sum(
+    TO_F_IF = sum(
+      df$SEXO == "Feminino" &
+        df$IDADE >= 15 &
+        df$IDADE <= 49,
+      na.rm = TRUE
+    ),
+    
+    TO_FT = sum(df$TIPOBITO == "Fetal", na.rm = TRUE),
+    
+    TO_NT = sum(
       df$TIPOBITO == "Nao fetal" &
         df$IDADE >= 0 &
         df$IDADE <= 27,
       na.rm = TRUE
     ),
     
-    TO_NEO_B = sum(
+    TO_NT_P = sum(
+      df$TIPOBITO == "Nao fetal" &
+        df$IDADE >= 0 &
+        df$IDADE <= 6,
+      na.rm = TRUE
+    ),
+    
+    TO_NT_T = sum(
+      df$TIPOBITO == "Nao fetal" &
+        df$IDADE >= 7 &
+        df$IDADE <= 27,
+      na.rm = TRUE
+    ),
+    
+    TO_PNT = sum(
+      df$IDADE >= 28 &
+        df$IDADE <= 364,
+      na.rm = TRUE
+    ),
+    
+    TO_MT_G = sum(
+      df$TPMORTEOCO == "Na gravidez",
+      na.rm = TRUE
+    ),
+    
+    TONT_B = sum(
       df$TIPOBITO == "Nao fetal" &
         df$IDADE >= 0 &
         df$IDADE <= 27 &
@@ -709,7 +763,7 @@ criar_linha_sim <- function(df, municipio){
       na.rm = TRUE
     ),
     
-    TO_NEO_P = sum(
+    TONT_PT = sum(
       df$TIPOBITO == "Nao fetal" &
         df$IDADE >= 0 &
         df$IDADE <= 27 &
@@ -717,7 +771,7 @@ criar_linha_sim <- function(df, municipio){
       na.rm = TRUE
     ),
     
-    TO_NEO_A = sum(
+    TONT_A = sum(
       df$TIPOBITO == "Nao fetal" &
         df$IDADE >= 0 &
         df$IDADE <= 27 &
@@ -725,7 +779,7 @@ criar_linha_sim <- function(df, municipio){
       na.rm = TRUE
     ),
     
-    TO_NEO_PD = sum(
+    TONT_PD = sum(
       df$TIPOBITO == "Nao fetal" &
         df$IDADE >= 0 &
         df$IDADE <= 27 &
@@ -733,7 +787,7 @@ criar_linha_sim <- function(df, municipio){
       na.rm = TRUE
     ),
     
-    TO_NEO_I = sum(
+    TONT_I = sum(
       df$TIPOBITO == "Nao fetal" &
         df$IDADE >= 0 &
         df$IDADE <= 27 &
@@ -741,79 +795,121 @@ criar_linha_sim <- function(df, municipio){
       na.rm = TRUE
     ),
     
-    TO_MAT = sum(!is.na(df$TPMORTEOCO), na.rm = TRUE),
+    TO_MT = sum(
+      !is.na(df$TPMORTEOCO),
+      na.rm = TRUE
+    ),
     
-    TO_MAT_G = sum(df$TPMORTEOCO == "Na gravidez", na.rm = TRUE),
+    TO_MT_DG = sum(
+      df$TPMORTEOCO == "Na gravidez",
+      na.rm = TRUE
+    ),
     
-    TO_MAT_P = sum(df$TPMORTEOCO == "No parto", na.rm = TRUE),
+    TO_MT_PT = sum(
+      df$TPMORTEOCO == "No parto",
+      na.rm = TRUE
+    ),
     
-    TO_MAT_A = sum(df$TPMORTEOCO == "No abortamento", na.rm = TRUE),
+    TO_MT_AB = sum(
+      df$TPMORTEOCO == "No abortamento",
+      na.rm = TRUE
+    ),
     
-    TO_MAT_42 = sum(
+    TO_MT_42 = sum(
       df$TPMORTEOCO == "Ate 42 dias apos o parto",
       na.rm = TRUE
     ),
     
-    TO_MAT_43 = sum(
+    TO_MT_43 = sum(
       df$TPMORTEOCO == "De 43 dias a 1 ano apos o parto",
       na.rm = TRUE
     ),
     
-    ESC0 = sum(df$ESC2010 == "Sem escolaridade", na.rm = TRUE),
-    
-    ESC1 = sum(df$ESC2010 == "Fundamental I", na.rm = TRUE),
-    
-    ESC2 = sum(df$ESC2010 == "Fundamental II", na.rm = TRUE),
-    
-    ESC3 = sum(df$ESC2010 == "Medio", na.rm = TRUE),
-    
-    ESC4 = sum(df$ESC2010 == "Superior incompleto", na.rm = TRUE),
-    
-    ESC5 = sum(df$ESC2010 == "Superior completo", na.rm = TRUE),
-    
-    IDADE_P25 = as.numeric(
-      quantile(df$IDADE, 0.25, na.rm = TRUE)
-    ),
-    
-    IDADE_P50 = as.numeric(
-      quantile(df$IDADE, 0.50, na.rm = TRUE)
-    ),
-    
-    IDADE_P75 = as.numeric(
-      quantile(df$IDADE, 0.75, na.rm = TRUE)
-    ),
-    
-    IDADE_MD = mean(df$IDADE, na.rm = TRUE),
-    
-    IDADE_DP = sd(df$IDADE, na.rm = TRUE),
-    
-    CID_I = sum(grepl("^I", df$CAUSABAS), na.rm = TRUE),
-    
-    CID_C = sum(grepl("^C", df$CAUSABAS), na.rm = TRUE),
-    
-    CID_J = sum(grepl("^J", df$CAUSABAS), na.rm = TRUE),
-    
-    CID_A = sum(grepl("^A", df$CAUSABAS), na.rm = TRUE),
-    
-    CID_E = sum(grepl("^E", df$CAUSABAS), na.rm = TRUE),
-    
-    IDADE_0_27 = sum(
-      df$IDADE >= 0 & df$IDADE <= 27,
+    TO_MT_P = sum(
+      df$TPMORTEOCO %in% c(
+        "Na gravidez",
+        "No parto",
+        "No abortamento",
+        "Ate 42 dias apos o parto"
+      ),
       na.rm = TRUE
     ),
     
-    IDADE_28_364 = sum(
-      df$IDADE >= 28 & df$IDADE <= 364,
+    TO_MT_P_I = sum(
+      df$TPMORTEOCO %in% c(
+        "Na gravidez",
+        "No parto",
+        "No abortamento",
+        "Ate 42 dias apos o parto"
+      ) &
+        df$IDADE >= 15 &
+        df$IDADE <= 49,
       na.rm = TRUE
     ),
     
-    IDADE_1_4 = sum(
-      df$IDADE >= 365 & df$IDADE <= 1825,
+    TO_MT_P_ES = sum(
+      df$TPMORTEOCO %in% c(
+        "Na gravidez",
+        "No parto",
+        "No abortamento",
+        "Ate 42 dias apos o parto"
+      ) &
+        df$ESC2010 == "Sem escolaridade",
       na.rm = TRUE
     ),
     
-    IDADE_5_19 = sum(
-      df$IDADE > 1825 & df$IDADE <= 6935,
+    TO_MT_P_EFI = sum(
+      df$TPMORTEOCO %in% c(
+        "Na gravidez",
+        "No parto",
+        "No abortamento",
+        "Ate 42 dias apos o parto"
+      ) &
+        df$ESC2010 == "Fundamental I",
+      na.rm = TRUE
+    ),
+    
+    TO_MT_P_EFII = sum(
+      df$TPMORTEOCO %in% c(
+        "Na gravidez",
+        "No parto",
+        "No abortamento",
+        "Ate 42 dias apos o parto"
+      ) &
+        df$ESC2010 == "Fundamental II",
+      na.rm = TRUE
+    ),
+    
+    TO_MT_P_EM = sum(
+      df$TPMORTEOCO %in% c(
+        "Na gravidez",
+        "No parto",
+        "No abortamento",
+        "Ate 42 dias apos o parto"
+      ) &
+        df$ESC2010 == "Medio",
+      na.rm = TRUE
+    ),
+    
+    TO_MT_P_ESI = sum(
+      df$TPMORTEOCO %in% c(
+        "Na gravidez",
+        "No parto",
+        "No abortamento",
+        "Ate 42 dias apos o parto"
+      ) &
+        df$ESC2010 == "Superior incompleto",
+      na.rm = TRUE
+    ),
+    
+    TO_MT_P_ESC = sum(
+      df$TPMORTEOCO %in% c(
+        "Na gravidez",
+        "No parto",
+        "No abortamento",
+        "Ate 42 dias apos o parto"
+      ) &
+        df$ESC2010 == "Superior completo",
       na.rm = TRUE
     )
     
@@ -821,7 +917,11 @@ criar_linha_sim <- function(df, municipio){
   
 }
 
-linha_total <- criar_linha_sim(dados_sim_2, "CE")
+linha_uf <- criar_linha_sim(
+  dados_sim_2,
+  "UF",
+  23
+)
 
 lista_municipios <- split(
   dados_sim_2,
@@ -836,6 +936,7 @@ linhas_municipios <- do.call(
       
       criar_linha_sim(
         lista_municipios[[mun]],
+        "MUNICIPIO",
         mun
       )
       
@@ -844,9 +945,10 @@ linhas_municipios <- do.call(
 )
 
 SIM_CE <- rbind(
-  linha_total,
+  linha_uf,
   linhas_municipios
 )
+
 
 
 
