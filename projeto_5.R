@@ -853,4 +853,4 @@ SIM_CE <- rbind(
 #TAREFA 8
 write.csv(SIM_CE, "SIM_CE.csv", row.names = FALSE)
 
-#
+# 
