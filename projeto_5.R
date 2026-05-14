@@ -955,4 +955,261 @@ SIM_CE <- rbind(
 #TAREFA 8
 write.csv(SIM_CE, "SIM_CE.csv", row.names = FALSE)
 
-# 
+
+
+# ETAPA 3#
+#TAREFA 1
+library(tidyverse)
+
+
+
+sidra_popre = read.csv(
+  "população residente estimada - UF e municípios - 2015 - SIDRA - tabela_6579.csv",
+  sep = ";",
+  header = TRUE
+)
+
+str(sidra_popre)
+dim(sidra_popre)
+
+
+sidra_sexo = read.csv(
+  "população residente censo 2010 - UF e municípios - total e por sexo - SIDRA - tabela_1552.csv",
+  sep = ";",
+  header = TRUE
+)
+
+str(sidra_sexo)
+dim(sidra_sexo)
+
+
+sidra_idade_uf <- read.csv(
+  "população residente censo 2010 - por faixa etária -  UF - SIDRA - tabela_1552.csv",
+  sep = ";",
+  header = TRUE
+)
+
+str(sidra_idade_uf)
+dim(sidra_idade_uf)
+
+
+sidra_idade_mun = read.csv(
+  "população residente censo 2010 - por faixa etária e sexo -  municípios - SIDRA - tabela_1552.csv",
+  sep = ";",
+  header = TRUE
+)
+
+
+str(sidra_idade_mun)
+dim(sidra_idade_mun)
+
+
+
+
+
+sidra_popre_ce <- sidra_popre[
+  grepl("^23", as.character(sidra_popre[,1])),
+]
+
+str(sidra_popre_ce)
+dim(sidra_popre_ce)
+
+sidra_sexo_ce <- sidra_sexo[
+  grepl("^23", as.character(sidra_sexo[,1])),
+]
+
+str(sidra_popre_ce)
+dim(sidra_sexo_ce)
+
+
+sidra_idade_uf_ce <- sidra_idade_uf[
+  grepl("^23", as.character(sidra_idade_uf[,1])),
+]
+
+str(sidra_idade_uf_ce)
+dim(sidra_idade_uf_ce)
+
+
+sidra_idade_mun_ce <- sidra_idade_mun[
+  grepl("^23", as.character(sidra_idade_mun[,1])),
+]
+
+
+str(sidra_idade_mun_ce)
+dim(sidra_idade_mun_ce)
+
+
+
+criar_linha_sidra <- function(codigo, nivel){
+  
+  popre <- sidra_popre_ce[
+    as.character(sidra_popre_ce[,1]) == as.character(codigo),
+  ]
+  
+  sexo <- sidra_sexo_ce[
+    as.character(sidra_sexo_ce[,1]) == as.character(codigo),
+  ]
+  
+  idade_uf <- sidra_idade_uf_ce
+  
+  idade_municipio <- sidra_idade_mun_ce[
+    as.character(sidra_idade_mun_ce[,1]) == as.character(codigo),
+  ]
+  
+  data.frame(
+    
+    ANO = 2015,
+    
+    NIVEL = nivel,
+    
+    CODMUNRES = codigo,
+    
+    POPRE_T = sum(
+      as.numeric(gsub(",", ".", gsub("\\.", "", popre[,ncol(popre)]))),
+      na.rm = TRUE
+    ),
+    
+    POPRC_T = sum(
+      as.numeric(gsub(",", ".", gsub("\\.", "", sexo[,ncol(sexo)]))),
+      na.rm = TRUE
+    ),
+    
+    POPRC_M = sum(
+      as.numeric(gsub(",", ".", gsub("\\.", "",
+                                     sexo[
+                                       grepl("Mascul", apply(sexo,1,paste,collapse=" ")),
+                                       ncol(sexo)
+                                     ]
+      ))),
+      na.rm = TRUE
+    ),
+    
+    POPRC_F = sum(
+      as.numeric(gsub(",", ".", gsub("\\.", "",
+                                     sexo[
+                                       grepl("Fem", apply(sexo,1,paste,collapse=" ")),
+                                       ncol(sexo)
+                                     ]
+      ))),
+      na.rm = TRUE
+    ),
+    
+    POPRC_15 = sum(
+      as.numeric(gsub(",", ".", gsub("\\.", "",
+                                     idade_uf[
+                                       grepl(
+                                         "0 a 4|5 a 9|10 a 14",
+                                         apply(idade_uf,1,paste,collapse=" ")
+                                       ),
+                                       ncol(idade_uf)
+                                     ]
+      ))),
+      na.rm = TRUE
+    ),
+    
+    POPRC_15_49 = sum(
+      as.numeric(gsub(",", ".", gsub("\\.", "",
+                                     idade_uf[
+                                       grepl(
+                                         "15 a 19|20 a 24|25 a 29|30 a 34|35 a 39|40 a 44|45 a 49",
+                                         apply(idade_uf,1,paste,collapse=" ")
+                                       ),
+                                       ncol(idade_uf)
+                                     ]
+      ))),
+      na.rm = TRUE
+    ),
+    
+    POPRC_50 = sum(
+      as.numeric(gsub(",", ".", gsub("\\.", "",
+                                     idade_uf[
+                                       grepl(
+                                         "50 a 59|60",
+                                         apply(idade_uf,1,paste,collapse=" ")
+                                       ),
+                                       ncol(idade_uf)
+                                     ]
+      ))),
+      na.rm = TRUE
+    ),
+    
+    POPRC_F_15 = sum(
+      as.numeric(gsub(",", ".", gsub("\\.", "",
+                                     idade_municipio[
+                                       grepl("Fem", apply(idade_municipio,1,paste,collapse=" ")) &
+                                         grepl(
+                                           "0 a 4|5 a 9|10 a 14",
+                                           apply(idade_municipio,1,paste,collapse=" ")
+                                         ),
+                                       ncol(idade_municipio)
+                                     ]
+      ))),
+      na.rm = TRUE
+    ),
+    
+    POPRC_F_15_49 = sum(
+      as.numeric(gsub(",", ".", gsub("\\.", "",
+                                     idade_municipio[
+                                       grepl("Fem", apply(idade_municipio,1,paste,collapse=" ")) &
+                                         grepl(
+                                           "15 a 19|20 a 24|25 a 29|30 a 34|35 a 39|40 a 44|45 a 49",
+                                           apply(idade_municipio,1,paste,collapse=" ")
+                                         ),
+                                       ncol(idade_municipio)
+                                     ]
+      ))),
+      na.rm = TRUE
+    ),
+    
+    POPRC_F_50 = sum(
+      as.numeric(gsub(",", ".", gsub("\\.", "",
+                                     idade_municipio[
+                                       grepl("Fem", apply(idade_municipio,1,paste,collapse=" ")) &
+                                         grepl(
+                                           "50 a 59|60",
+                                           apply(idade_municipio,1,paste,collapse=" ")
+                                         ),
+                                       ncol(idade_municipio)
+                                     ]
+      ))),
+      na.rm = TRUE
+    )
+    
+  )
+  
+}
+
+linha_uf <- criar_linha_sidra(
+  23,
+  "UF"
+)
+
+municipios <- unique(
+  sidra_popre_ce[,1]
+)
+
+linhas_municipios <- do.call(
+  rbind,
+  lapply(
+    municipios,
+    function(x){
+      
+      criar_linha_sidra(
+        x,
+        "MUNICIPIO"
+      )
+      
+    }
+  )
+)
+
+SIDRA_CE <- rbind(
+  linha_uf,
+  linhas_municipios)
+  
+
+write.csv(
+  SIDRA_CE,
+  "SIDRA_CE.csv",
+  row.names = FALSE
+)
