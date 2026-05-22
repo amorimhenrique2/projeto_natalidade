@@ -1213,3 +1213,103 @@ write.csv(
   "SIDRA_CE.csv",
   row.names = FALSE
 )
+
+
+#tarefa 2
+
+sinisa = read.csv(
+  "agua e esgoto - município - 2015.csv",
+  sep = ";",
+  header = TRUE
+)
+
+str(sinisa)
+dim(sinisa)
+
+sinisa_ce = sinisa[
+  grepl("^23", as.character(sinisa$CODMUNRES)),
+]
+
+str(sinisa_ce)
+dim(sinisa_ce)
+
+criar_linha_sinisa <- function(codigo, nivel){
+  
+  dados = sinisa_ce[
+    as.character(sinisa_ce$CODMUNRES) == as.character(codigo),
+  ]
+  
+  data.frame(
+    
+    ANO = 2015,
+    
+    NIVEL = nivel,
+    
+    CODMUNRES = codigo,
+    
+    POPR_RA = sum(
+      as.numeric(
+        gsub("\\.", "", dados$POPR_RA)
+      ),
+      na.rm = TRUE
+    ),
+    
+    POPR_RE = sum(
+      as.numeric(
+        gsub("\\.", "", dados$POPR_RE)
+      ),
+      na.rm = TRUE
+    )
+    
+  )
+  
+}
+
+linha_uf = criar_linha_sinisa(
+  23,
+  "UF"
+)
+
+municipios = unique(
+  sinisa_ce$CODMUNRES
+)
+
+municipios = municipios[
+  as.character(municipios) != "23"
+]
+
+linhas_municipios = do.call(
+  rbind,
+  lapply(
+    municipios,
+    function(x){
+      
+      criar_linha_sinisa(
+        x,
+        "MUNICIPIO"
+      )
+      
+    }
+  )
+)
+
+SINISA_CE = rbind(
+  linha_uf,
+  linhas_municipios
+)
+
+View(SINISA_CE)
+
+str(SINISA_CE)
+
+dim(SINISA_CE)
+
+write.csv(
+  SINISA_CE,
+  "SINISA_CE.csv",
+  row.names = FALSE
+)
+
+
+
+
