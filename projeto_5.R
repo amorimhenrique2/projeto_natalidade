@@ -1311,5 +1311,276 @@ write.csv(
 )
 
 
+#TAREFA 3
 
+atlas_uf = read.csv(
+  "IDHM - 2010 (CENSO) e 2015 (PNAD) - total e por sexo - UF - Atlas Brasil.csv",
+  sep = ";",
+  header = TRUE,
+)
+
+atlas_mun = read.csv(
+  "IDHM - 2010 - municípios - Atlas Brasil.csv",
+  sep = ";",
+  header = TRUE,
+)
+
+codigos = read.csv(
+  "códigos dos municípios - 2010.csv",
+  sep = ";",
+  header = TRUE,
+)
+
+str(atlas_uf)
+dim(atlas_uf)
+
+str(atlas_mun)
+dim(atlas_mun)
+
+str(codigos)
+dim(codigos)
+
+atlas_uf_ce = atlas_uf[
+  grepl(
+    "Ceará",
+    apply(atlas_uf,1,paste,collapse=" "),
+    ignore.case = TRUE
+  ),
+]
+
+atlas_mun_ce = atlas_mun[
+  grepl(
+    "\\(CE\\)",
+    atlas_mun$município
+  ),
+]
+
+
+codigos_ce = codigos[
+  substr(
+    as.character(codigos$CODMUNRES),
+    1,
+    2
+  ) == "23",
+]
+
+str(atlas_uf_ce)
+dim(atlas_uf_ce)
+
+str(atlas_mun_ce)
+dim(atlas_mun_ce)
+
+limpar_numero = function(x){
+  
+  as.numeric(
+    gsub(",", ".", gsub("\\.", "", x))
+  )
+  
+}
+
+criar_linha_atlas = function(codigo, nivel){
+  
+  if(nivel == "UF"){
+    
+    dados = atlas_uf_ce
+    
+  } else {
+    
+    dados = atlas_mun_ce[
+      as.character(atlas_mun_ce[,1]) == as.character(codigo),
+    ]
+    
+  }
+  
+  texto = apply(dados,1,paste,collapse=" ")
+  
+  data.frame(
+    
+    ANO = 2015,
+    
+    NIVEL = nivel,
+    
+    CODMUNRES = codigo,
+    
+    IDHM = mean(
+      limpar_numero(
+        dados[
+          ,
+          grep("IDHM", names(dados), ignore.case = TRUE)[1]
+        ]
+      ),
+      na.rm = TRUE
+    ),
+    
+    IDHM_M = mean(
+      limpar_numero(
+        dados[
+          grepl("Masc|Hom", texto, ignore.case = TRUE),
+          grep("IDHM", names(dados), ignore.case = TRUE)[1]
+        ]
+      ),
+      na.rm = TRUE
+    ),
+    
+    IDHM_F = mean(
+      limpar_numero(
+        dados[
+          grepl("Fem|Mulh", texto, ignore.case = TRUE),
+          grep("IDHM", names(dados), ignore.case = TRUE)[1]
+        ]
+      ),
+      na.rm = TRUE
+    )
+    
+  )
+  
+}
+
+linha_uf = criar_linha_atlas(
+  23,
+  "UF"
+)
+
+municipios = unique(
+  atlas_mun_ce[,1]
+)
+
+linhas_municipios = do.call(
+  rbind,
+  lapply(
+    municipios,
+    function(x){
+      
+      criar_linha_atlas(
+        x,
+        "MUNICIPIO"
+      )
+      
+    }
+  )
+)
+
+ATLAS_CE = rbind(
+  linha_uf,
+  linhas_municipios
+)
+
+View(ATLAS_CE)
+
+str(ATLAS_CE)
+
+dim(ATLAS_CE)
+
+limpar_numero = function(x){
+  
+  as.numeric(
+    gsub(",", ".", as.character(x))
+  )
+  
+}
+
+criar_linha_atlas = function(codigo, nivel){
+  
+  if(nivel == "UF"){
+    
+    dados = atlas_uf_ce
+    
+  } else {
+    
+    nome_municipio = codigos_ce[
+      codigos_ce$CODMUNRES == codigo,
+      1
+    ]
+    
+    dados = atlas_mun_ce[
+      grepl(
+        nome_municipio,
+        atlas_mun_ce$município,
+        ignore.case = TRUE
+      ),
+    ]
+    
+  }
+  
+  data.frame(
+    
+    ANO = 2015,
+    
+    NIVEL = nivel,
+    
+    CODMUNRES = codigo,
+    
+    IDHM_A = mean(
+      limpar_numero(
+        dados[,grep("idhm", names(dados), ignore.case = TRUE)[1]]
+      ),
+      na.rm = TRUE
+    ),
+    
+    IDHM_CA = mean(
+      limpar_numero(
+        dados[,grep("idhm", names(dados), ignore.case = TRUE)[1]]
+      ),
+      na.rm = TRUE
+    ),
+    
+    IDHM_CA_M = mean(
+      limpar_numero(
+        dados[,grep("idhm", names(dados), ignore.case = TRUE)[1]]
+      ),
+      na.rm = TRUE
+    ),
+    
+    IDHM_CA_F = mean(
+      limpar_numero(
+        dados[,grep("idhm", names(dados), ignore.case = TRUE)[1]]
+      ),
+      na.rm = TRUE
+    )
+    
+  )
+  
+}
+
+linha_uf = criar_linha_atlas(
+  23,
+  "UF"
+)
+
+municipios = unique(
+  codigos_ce$CODMUNRES
+)
+
+linhas_municipios = do.call(
+  rbind,
+  lapply(
+    municipios,
+    function(x){
+      
+      criar_linha_atlas(
+        x,
+        "MUNICIPIO"
+      )
+      
+    }
+  )
+)
+
+ATLAS_CE_02 = rbind(
+  linha_uf,
+  linhas_municipios
+)
+
+
+write.csv(
+  ATLAS_CE,
+  "ATLAS_CE.csv",
+  row.names = FALSE
+)
+
+write.csv(
+  ATLAS_CE_02,
+  "ATLAS_CE_02.csv",
+  row.names = FALSE
+)
 
