@@ -269,153 +269,246 @@ APG5_DP <- sd(dados_sinasc_2$APGAR5, na.rm = TRUE)
 
 
 #tarefa 10
-criar_linha <- function(df, uf_nome = "CE") {
+criar_linha <- function(df, codigo, nivel) {
   
   data.frame(
     
     ANO = 2015,
-    UFR = uf_nome,
+    
+    NIVEL = nivel,
+    
+    CODMUNRES = codigo,
     
     TN = nrow(df),
+    
     TNRC = sum(complete.cases(df)),
     
     TGI_15 = sum(df$IDADEMAE < 15, na.rm = TRUE),
+    
     TGI_15_19 = sum(df$IDADEMAE >= 15 & df$IDADEMAE <= 19, na.rm = TRUE),
+    
     TGI_20_24 = sum(df$IDADEMAE >= 20 & df$IDADEMAE <= 24, na.rm = TRUE),
+    
     TGI_25_29 = sum(df$IDADEMAE >= 25 & df$IDADEMAE <= 29, na.rm = TRUE),
+    
     TGI_30_34 = sum(df$IDADEMAE >= 30 & df$IDADEMAE <= 34, na.rm = TRUE),
+    
     TGI_35_39 = sum(df$IDADEMAE >= 35 & df$IDADEMAE <= 39, na.rm = TRUE),
+    
     TGI_40_44 = sum(df$IDADEMAE >= 40 & df$IDADEMAE <= 44, na.rm = TRUE),
+    
     TGI_45_49 = sum(df$IDADEMAE >= 45 & df$IDADEMAE <= 49, na.rm = TRUE),
+    
     TGI_50 = sum(df$IDADEMAE >= 50, na.rm = TRUE),
     
     TGIF = sum(df$IDADEMAE >= 15 & df$IDADEMAE <= 49, na.rm = TRUE),
     
     IM_P25 = quantile(df$IDADEMAE, 0.25, na.rm = TRUE),
-    IM_P50 = quantile(df$IDADEMAE, 0.5, na.rm = TRUE),
+    
+    IM_P50 = quantile(df$IDADEMAE, 0.50, na.rm = TRUE),
+    
     IM_P75 = quantile(df$IDADEMAE, 0.75, na.rm = TRUE),
+    
     IM_MD = mean(df$IDADEMAE, na.rm = TRUE),
+    
     IM_DP = sd(df$IDADEMAE, na.rm = TRUE),
     
-    EM_S = sum(df$ESCMAE2010 == 0, na.rm = TRUE),
-    EM_FI = sum(df$ESCMAE2010 == 1, na.rm = TRUE),
-    EM_FII = sum(df$ESCMAE2010 == 2, na.rm = TRUE),
-    EM_M = sum(df$ESCMAE2010 == 3, na.rm = TRUE),
-    EM_SI = sum(df$ESCMAE2010 == 4, na.rm = TRUE),
-    EM_SC = sum(df$ESCMAE2010 == 5, na.rm = TRUE),
+    EM_S = sum(df$ESCMAE2010 == "Sem escolaridade", na.rm = TRUE),
     
-    TGRC_B = sum(df$RACACORMAE == 1, na.rm = TRUE),
-    TGRC_PT = sum(df$RACACORMAE == 2, na.rm = TRUE),
-    TGRC_A = sum(df$RACACORMAE == 3, na.rm = TRUE),
-    TGRC_PD = sum(df$RACACORMAE == 4, na.rm = TRUE),
-    TGRC_I = sum(df$RACACORMAE == 5, na.rm = TRUE),
+    EM_FI = sum(df$ESCMAE2010 == "Fundamental I (1ª a 4ª série)", na.rm = TRUE),
+    
+    EM_FII = sum(df$ESCMAE2010 == "Fundamental II (5ª a 8ª série)", na.rm = TRUE),
+    
+    EM_M = sum(df$ESCMAE2010 == "Médio (antigo 2º grau)", na.rm = TRUE),
+    
+    EM_SI = sum(df$ESCMAE2010 == "Superior incompleto", na.rm = TRUE),
+    
+    EM_SC = sum(df$ESCMAE2010 == "Superior completo", na.rm = TRUE),
+    
+    TGRC_B = sum(df$RACACORMAE == "Branca", na.rm = TRUE),
+    
+    TGRC_PT = sum(df$RACACORMAE == "Preta", na.rm = TRUE),
+    
+    TGRC_A = sum(df$RACACORMAE == "Amarela", na.rm = TRUE),
+    
+    TGRC_PD = sum(df$RACACORMAE == "Parda", na.rm = TRUE),
+    
+    TGRC_I = sum(df$RACACORMAE == "Indígena", na.rm = TRUE),
     
     TGSC = sum(df$ESTCIV == "Sem companheiro", na.rm = TRUE),
+    
     TGCC = sum(df$ESTCIV == "Com companheiro", na.rm = TRUE),
     
-    TGPRI = sum(df$PARIDADE == 1, na.rm = TRUE),
-    TGNPRI = sum(df$PARIDADE != 1, na.rm = TRUE),
+    TGPRI = sum(df$PARIDADE == "Nulípara", na.rm = TRUE),
     
-    TGU = sum(df$GRAVIDEZ == 1, na.rm = TRUE),
-    TGG = sum(df$GRAVIDEZ == 2, na.rm = TRUE),
+    TGNPRI = sum(df$PARIDADE == "Multípara", na.rm = TRUE),
     
-    TGD_22 = sum(df$GESTACAO == 1, na.rm = TRUE),
-    TGD_22_27 = sum(df$GESTACAO == 2, na.rm = TRUE),
-    TGD_28_31 = sum(df$GESTACAO == 3, na.rm = TRUE),
-    TGD_32_36 = sum(df$GESTACAO == 4, na.rm = TRUE),
-    TGD_37_41 = sum(df$GESTACAO == 5, na.rm = TRUE),
-    TGD_42 = sum(df$GESTACAO == 6, na.rm = TRUE),
+    TGU = sum(df$GRAVIDEZ == "Única", na.rm = TRUE),
+    
+    TGG = sum(df$GRAVIDEZ == "Dupla", na.rm = TRUE),
+    
+    TGD_22 = sum(df$GESTACAO == "Menos de 22 semanas", na.rm = TRUE),
+    
+    TGD_22_27 = sum(df$GESTACAO == "22 a 27 semanas", na.rm = TRUE),
+    
+    TGD_28_31 = sum(df$GESTACAO == "28 a 31 semanas", na.rm = TRUE),
+    
+    TGD_32_36 = sum(df$GESTACAO == "32 a 36 semanas", na.rm = TRUE),
+    
+    TGD_37_41 = sum(df$GESTACAO == "37 a 41 semanas", na.rm = TRUE),
+    
+    TGD_42 = sum(df$GESTACAO == "42 semanas e mais", na.rm = TRUE),
     
     TGD_PRT = sum(df$SEMAGESTAC < 37, na.rm = TRUE),
+    
     TGD_AT = sum(df$SEMAGESTAC >= 37 & df$SEMAGESTAC <= 41, na.rm = TRUE),
+    
     TGD_PST = sum(df$SEMAGESTAC >= 42, na.rm = TRUE),
     
     DG_P25 = quantile(df$SEMAGESTAC, 0.25, na.rm = TRUE),
-    DG_P50 = quantile(df$SEMAGESTAC, 0.5, na.rm = TRUE),
+    
+    DG_P50 = quantile(df$SEMAGESTAC, 0.50, na.rm = TRUE),
+    
     DG_P75 = quantile(df$SEMAGESTAC, 0.75, na.rm = TRUE),
+    
     DG_MD = mean(df$SEMAGESTAC, na.rm = TRUE),
+    
     DG_DP = sd(df$SEMAGESTAC, na.rm = TRUE),
     
-    TKC_NR = sum(df$KOTELCHUCK == 1, na.rm = TRUE),
-    TKC_ID = sum(df$KOTELCHUCK == 2, na.rm = TRUE),
-    TKC_IT = sum(df$KOTELCHUCK == 3, na.rm = TRUE),
-    TKC_AD = sum(df$KOTELCHUCK == 4, na.rm = TRUE),
-    TKC_MAD = sum(df$KOTELCHUCK == 5, na.rm = TRUE),
+    TKC_NR = sum(df$KOTELCHUCK == "Não realizou pré-natal", na.rm = TRUE),
+    
+    TKC_ID = sum(df$KOTELCHUCK == "Inadequado", na.rm = TRUE),
+    
+    TKC_IT = sum(df$KOTELCHUCK == "Intermediário", na.rm = TRUE),
+    
+    TKC_AD = sum(df$KOTELCHUCK == "Adequado", na.rm = TRUE),
+    
+    TKC_MAD = sum(df$KOTELCHUCK == "Mais que adequado", na.rm = TRUE),
     
     TGPRG_S = sum(df$PERIG == "Sim", na.rm = TRUE),
-    TGPRG_N = sum(df$PERIG == "Nao", na.rm = TRUE),
     
-    TPV = sum(df$PARTO == 1, na.rm = TRUE),
-    TPC = sum(df$PARTO == 2, na.rm = TRUE),
+    TGPRG_N = sum(df$PERIG == "Não", na.rm = TRUE),
     
-    TRAP_C = sum(df$TPAPRESENT == 1, na.rm = TRUE),
-    TRAP_P = sum(df$TPAPRESENT == 2, na.rm = TRUE),
-    TRAP_T = sum(df$TPAPRESENT == 3, na.rm = TRUE),
+    TPV = sum(df$PARTO == "Vaginal", na.rm = TRUE),
     
-    TGROB_1 = sum(df$TPROBSON == 1, na.rm = TRUE),
-    TGROB_2 = sum(df$TPROBSON == 2, na.rm = TRUE),
-    TGROB_3 = sum(df$TPROBSON == 3, na.rm = TRUE),
-    TGROB_4 = sum(df$TPROBSON == 4, na.rm = TRUE),
-    TGROB_5 = sum(df$TPROBSON == 5, na.rm = TRUE),
-    TGROB_6 = sum(df$TPROBSON == 6, na.rm = TRUE),
-    TGROB_7 = sum(df$TPROBSON == 7, na.rm = TRUE),
-    TGROB_8 = sum(df$TPROBSON == 8, na.rm = TRUE),
-    TGROB_9 = sum(df$TPROBSON == 9, na.rm = TRUE),
-    TGROB_10 = sum(df$TPROBSON == 10, na.rm = TRUE),
+    TPC = sum(df$PARTO == "Cesário", na.rm = TRUE),
     
-    TNLOC_H = sum(df$LOCNASC == 1, na.rm = TRUE),
-    TNLOC_ES = sum(df$LOCNASC == 2, na.rm = TRUE),
-    TNLOC_D = sum(df$LOCNASC == 3, na.rm = TRUE),
-    TNLOC_O = sum(df$LOCNASC == 4, na.rm = TRUE),
-    TNLOC_AI = sum(df$LOCNASC == 5, na.rm = TRUE),
+    TRAP_C = sum(df$TPAPRESENT == "Cefálico", na.rm = TRUE),
     
-    TRRC_B = sum(df$RACACOR == 1, na.rm = TRUE),
-    TRRC_PT = sum(df$RACACOR == 2, na.rm = TRUE),
-    TRRC_A = sum(df$RACACOR == 3, na.rm = TRUE),
-    TRRC_PD = sum(df$RACACOR == 4, na.rm = TRUE),
-    TRRC_I = sum(df$RACACOR == 5, na.rm = TRUE),
+    TRAP_P = sum(df$TPAPRESENT == "Pélvica ou podálica", na.rm = TRUE),
+    
+    TRAP_T = sum(df$TPAPRESENT == "Transversa", na.rm = TRUE),
+    
+    TGROB_1 = sum(df$TPROBSON == "Grupo 1", na.rm = TRUE),
+    
+    TGROB_2 = sum(df$TPROBSON == "Grupo 2", na.rm = TRUE),
+    
+    TGROB_3 = sum(df$TPROBSON == "Grupo 3", na.rm = TRUE),
+    
+    TGROB_4 = sum(df$TPROBSON == "Grupo 4", na.rm = TRUE),
+    
+    TGROB_5 = sum(df$TPROBSON == "Grupo 5", na.rm = TRUE),
+    
+    TGROB_6 = sum(df$TPROBSON == "Grupo 6", na.rm = TRUE),
+    
+    TGROB_7 = sum(df$TPROBSON == "Grupo 7", na.rm = TRUE),
+    
+    TGROB_8 = sum(df$TPROBSON == "Grupo 8", na.rm = TRUE),
+    
+    TGROB_9 = sum(df$TPROBSON == "Grupo 9", na.rm = TRUE),
+    
+    TGROB_10 = sum(df$TPROBSON == "Grupo 10", na.rm = TRUE),
+    
+    TNLOC_H = sum(df$LOCNASC == "Hospital", na.rm = TRUE),
+    
+    TNLOC_ES = sum(df$LOCNASC == "Outros estabelecimentos de saúde", na.rm = TRUE),
+    
+    TNLOC_D = sum(df$LOCNASC == "Domicílio", na.rm = TRUE),
+    
+    TNLOC_O = sum(df$LOCNASC == "Outros", na.rm = TRUE),
+    
+    TNLOC_AI = 0,
+    
+    TRS_M = sum(df$SEXO == "Masculino", na.rm = TRUE),
+    
+    TRS_F = sum(df$SEXO == "Feminino", na.rm = TRUE),
+    
+    TRRC_B = sum(df$RACACOR == "Branca", na.rm = TRUE),
+    
+    TRRC_PT = sum(df$RACACOR == "Preta", na.rm = TRUE),
+    
+    TRRC_A = sum(df$RACACOR == "Amarela", na.rm = TRUE),
+    
+    TRRC_PD = sum(df$RACACOR == "Parda", na.rm = TRUE),
+    
+    TRRC_I = sum(df$RACACOR == "Indígena", na.rm = TRUE),
     
     TRP_BP = sum(df$F_PESO == "Baixo peso", na.rm = TRUE),
-    TRP_N = sum(df$F_PESO == "Normal", na.rm = TRUE),
+    
+    TRP_N = sum(df$F_PESO == "Peso normal", na.rm = TRUE),
+    
     TRP_M = sum(df$F_PESO == "Macrossomia", na.rm = TRUE),
     
     PESO_P25 = quantile(df$PESO, 0.25, na.rm = TRUE),
-    PESO_P50 = quantile(df$PESO, 0.5, na.rm = TRUE),
+    
+    PESO_P50 = quantile(df$PESO, 0.50, na.rm = TRUE),
+    
     PESO_P75 = quantile(df$PESO, 0.75, na.rm = TRUE),
+    
     PESO_MD = mean(df$PESO, na.rm = TRUE),
+    
     PESO_DP = sd(df$PESO, na.rm = TRUE),
     
     TRPIG_P = sum(df$F_PIG == "PIG", na.rm = TRUE),
+    
     TRPIG_A = sum(df$F_PIG == "AIG", na.rm = TRUE),
+    
     TRPIG_G = sum(df$F_PIG == "GIG", na.rm = TRUE),
     
     TRAPG5_B = sum(df$F_APGAR5 == "Baixo", na.rm = TRUE),
+    
     TRAPG5_N = sum(df$F_APGAR5 == "Normal", na.rm = TRUE),
     
     APG5_MD = mean(df$APGAR5, na.rm = TRUE),
+    
     APG5_DP = sd(df$APGAR5, na.rm = TRUE),
     
-    TRAC = sum(df$IDANOMAL == 1, na.rm = TRUE),
-    TRSAC = sum(df$IDANOMAL == 2, na.rm = TRUE),
+    TRAC = sum(df$IDANOMAL == "Sim", na.rm = TRUE),
     
-    EXTRA1 = NA,
-    EXTRA2 = NA,
-    EXTRA3 = NA,
-    EXTRA4 = NA
+    TRSAC = sum(df$IDANOMAL == "Não", na.rm = TRUE)
     
   )
 }
 
-linha_total <- criar_linha(dados_sinasc_2, "CE")
-
-lista_municipios <- split(dados_sinasc_2, dados_sinasc_2$CODMUNRES)
-
-linhas_municipios <- do.call(rbind,
-                             lapply(lista_municipios, function(x) criar_linha(x, "CE"))
+linha_total <- criar_linha(
+  dados_sinasc_2,
+  23,
+  "UF"
 )
 
-SINASC_CE <- rbind(linha_total, linhas_municipios)
+lista_municipios <- split(
+  dados_sinasc_2,
+  dados_sinasc_2$CODMUNRES
+)
 
+linhas_municipios <- do.call(
+  rbind,
+  lapply(
+    names(lista_municipios),
+    function(x){
+      criar_linha(
+        lista_municipios[[x]],
+        x,
+        "MUNICIPIO"
+      )
+    }
+  )
+)
+
+SINASC_CE <- rbind(
+  linha_total,
+  linhas_municipios
+)
 
 #tarefa 11
 write.csv(SINASC_CE, "SINASC_CE.csv", row.names = FALSE)
@@ -430,8 +523,8 @@ write.csv(SINASC_CE, "SINASC_CE.csv", row.names = FALSE)
 #TAREFA 1
 
 dados_sim = read.csv("Mortalidade_Geral_2015.csv", sep=";", header=TRUE)
-head(dados_sinasc)
-str(dados_sinasc)
+head(dados_sim)
+str(dados_sim)
 
 #TAREFA 2
 dados_sim_1 = dados_sim[, c(1,3,4,8,9,10,11,14,17,35,36,37,47,77,84)]
@@ -1585,4 +1678,67 @@ write.csv(
 )
 
 #tarefa 2 e 3 feitas
+
+##################################################################
+#etapa 4
+################################################################
+#tarefa 1 
+
+DA_CE <- merge(
+  SIDRA_CE,
+  ATLAS_CE,
+  by = c("ANO", "NIVEL", "CODMUNRES"),
+  all = TRUE
+)
+
+DA_CE <- merge(
+  DA_CE,
+  SINASC_CE,
+  by = c("ANO", "NIVEL", "CODMUNRES"),
+  all = TRUE
+)
+
+DA_CE <- merge(
+  DA_CE,
+  SIM_CE,
+  by = c("ANO", "NIVEL", "CODMUNRES"),
+  all = TRUE
+)
+
+DA_CE <- merge(
+  DA_CE,
+  SINISA_CE,
+  by = c("ANO", "NIVEL", "CODMUNRES"),
+  all = TRUE
+)
+
+
+
+#tarefa 1 completa
+################
+#tarefa 2
+DA_CE$TFG <- (DA_CE$TN / DA_CE$POPRC_F_15_49) * 1000
+
+DA_CE$TMG <- (DA_CE$TO / DA_CE$POPRE_T) * 1000
+
+DA_CE$RMM <- (DA_CE$TO_MT / DA_CE$TN) * 100000
+
+DA_CE$TMM <- (DA_CE$TO_MT / DA_CE$POPRC_F_15_49) * 100000
+
+DA_CE$TMM_P <- (DA_CE$TO_MT_P / DA_CE$POPRC_F_15_49) * 100000
+
+DA_CE$TMI <- ((DA_CE$TO_NT + DA_CE$TO_PNT) / DA_CE$TN) * 1000
+
+head(DA_CE)
+
+#tarefa 2 completa
+
+BDEM_UF_2015 <- DA_CE
+
+write.csv(
+  BDEM_UF_2015,
+  "BDEM_UF_2015.csv",
+  row.names = FALSE
+)
+
 
